@@ -1,0 +1,132 @@
+name: retendo-network
+services:
+  nginx:
+    image: nginx:mainline-alpine
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - type: bind
+        source: ./config/nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+      - type: bind
+        source: ./config/nginx
+        target: /etc/nginx/conf.d/
+        read_only: true
+    networks:
+      default:
+      internal:
+
+  mongodb:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 127.0.0.1:27017:27017
+    volumes:
+      - type: bind
+        source: ./config/mongod.conf
+        target: /etc/mongod.conf
+        read_only: true
+      - type: volume
+        source: mongodb-database
+        target: /data/db
+    networks:
+      internal:
+    command: --config "/etc/mongod.conf" --replSet rs
+
+  mongo-express:
+    image: mongo-express:latest
+    depends_on:
+      - mongodb
+    restart: always
+    ports:
+      - 127.0.0.1:8082:8082
+    networks:
+      internal:
+    env_file:
+      - ./env/mongo-express.env
+
+  minio:
+    image: minio/minio:latest
+    depends_on:
+      - nginx
+    restart: always
+    ports:
+      - 127.0.0.1:8083:8083
+    volumes:
+      - type: volume
+        source: minio-s3-data
+        target: /data
+    networks:
+      internal:
+    env_file:
+      - ./env/minio.env
+      - ./env/minio.local.env
+    command: server --console-address ":8083"
+
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - type: volume
+        source: redis-data
+        target: /data
+    networks:
+      internal:
+    command: redis-server --save 60 1
+
+  redis-commander:
+    image: ghcr.io/joeferner/redis-commander:latest
+    depends_on:
+      - redis
+    restart: always
+    ports:
+      - 127.0.0.1:8086:8086
+    networks:
+      internal:
+    env_file:
+      - ./env/redis-commander.env
+
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: always
+    ports:
+      - 127.0.0.1:8084:8084
+    volumes:
+      - type: volume
+        source: mailpit-mail
+        target: /data
+    networks:
+      internal:
+    env_file:
+      - ./env/mailpit.env
+
+  account:
+    build: ./repos/account
+    depends_on:
+      - nginx
+      - mongodb
+      - minio
+      - redis
+      - mailpit
+    restart: always
+    ports:
+      - 127.0.0.1:9229:9229
+    networks:
+      internal:
+    command: ["node", "--inspect=0.0.0.0:9229", "."]
+    env_file:
+      - ./env/account.env
+      - ./env/account.local.env
+
+volumes:
+  mongodb-database:
+  minio-s3-data:
+  redis-data:
+  mailpit-mail:
+
+networks:
+  default:
+  internal:
+    driver: bridge

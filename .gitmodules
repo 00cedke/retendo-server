@@ -1,0 +1,3 @@
+[submodule "repos/account"]
+	path = repos/account
+	url = https://github.com/RetendoNetwork/account.git
