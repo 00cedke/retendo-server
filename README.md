@@ -1,8 +1,15 @@
 # retendo-server
-Official Retendo Network Server Setup.
+- Official Retendo Network Server Setup.
 
 ## Usage
 - Need Python, Git, Node JS and Docker.
+- And start the `build.bat`.
+
+## Support
+- [ ] Wii U
+- [ ] 3DS
+- [ ] Cemu
+- [ ] Citra
 
 ## Credits
 - MatthewL246 for the idea of ​​pretendo-docker but for Retendo Network.

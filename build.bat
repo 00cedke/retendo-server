@@ -1,5 +1,3 @@
 @echo off
-
-bash config.sh
-
+bash bash/server.sh
 pause
