@@ -34,7 +34,7 @@ generate_hex() {
     head /dev/urandom | LC_ALL=C tr -dc "A-F0-9" | head -c "$length"
 }
 
-echo "Setting up local environment variables.."
+print_blue "Setting up local environment variables.."
 
 account_aes_key=$(generate_hex 64)
 echo "ACT_CONFIG_AES_KEY=$account_aes_key" >> ./env/account.local.env
@@ -43,4 +43,4 @@ minio_secret_key=$(generate_password 32)
 echo "MINIO_ROOT_PASSWORD=$minio_secret_key" >> ./env/minio.local.env
 echo "ACT_CONFIG_S3_ACCESS_SECRET=$minio_secret_key" >> ./env/account.local.env
 
-echo "Successfully set up all environment."
+print_blue "Successfully set up all environment."
