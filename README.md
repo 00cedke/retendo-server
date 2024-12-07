@@ -1,6 +1,8 @@
 # retendo-server
 - Official Retendo Network Server Setup.
 
+# I WILL DO LATER BECAUSE ITS HARD
+
 ## Usage
 - Need Python, Git, Node JS and Docker.
 - And start the `build.bat`.
