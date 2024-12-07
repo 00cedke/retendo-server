@@ -6,11 +6,11 @@ print_blue() {
 
 git config --local submodule.recurse true
 
-print_blue "Update the repository.."
-./update.sh
-
 print_blue "Set up environments.."
-./environment.sh
+./bash/environment.sh
+
+print_blue "Added patches.."
+./bash/patches.sh
 
 print_blue "Pulling.."
 docker compose pull

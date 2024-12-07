@@ -1,3 +1,3 @@
 @echo off
-bash bash/server.sh
+bash server.sh
 pause
